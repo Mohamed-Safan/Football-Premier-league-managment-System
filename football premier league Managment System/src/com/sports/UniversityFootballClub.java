@@ -2,13 +2,13 @@ package com.sports;
 
 import java.util.Objects;
 
-public class UniversityFootballClub extends FootballClub{
+public class UniversityFootballClub extends FootballClub {
 
     private String nameOfTheUniversity;
     private int contactNumberOfTheUniversity;
 
-    public UniversityFootballClub(String nameOfTheClub, String locationOfTheClub, String nameOfTheManager, String registrationNumber, int contactNumberOfTheClub, int numberOfWins, int numberOfDraws, int numberOfDefeats, int numberOfGoals, int numberOfGoalsReceived, int numberOfGoalsScored, double numberOfPoints, int numberOfMatchesPlayed, String nameOfTheUniversity, int contactNumberOfTheUniversity) {
-        super(nameOfTheClub, locationOfTheClub, nameOfTheManager, registrationNumber, contactNumberOfTheClub);
+    public UniversityFootballClub(String nameOfTheClub, String locationOfTheClub, String nameOfTheManager, String registrationNumber, String contactNumberOfTheClub, int numberOfWins, int numberOfDraws, int numberOfDefeats, int numberOfGoals, int numberOfGoalsReceived, int numberOfGoalsScored, double numberOfPoints, int numberOfMatchesPlayed, String nameOfTheUniversity, int contactNumberOfTheUniversity) {
+        super(nameOfTheClub, locationOfTheClub, nameOfTheManager, registrationNumber, contactNumberOfTheClub,numberOfWins,numberOfDraws,numberOfDefeats,numberOfGoals,numberOfGoalsReceived,numberOfGoalsScored, (int) numberOfPoints,numberOfMatchesPlayed);
         this.nameOfTheUniversity = nameOfTheUniversity;
         this.contactNumberOfTheUniversity = contactNumberOfTheUniversity;
     }

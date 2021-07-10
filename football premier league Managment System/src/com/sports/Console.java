@@ -1,27 +1,32 @@
 package com.sports;
 
+
+import javafx.application.Application;
+import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Console {
+public class Console extends Application {
+
 
     private final static PremierLeagueManager premierManager = new PremierLeagueManager();
-    final static Scanner scanner = new Scanner(System.in);
     public static int value = 0;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException
-     {
-
+    {
         Scanner input = new Scanner(System.in);
         try {
-            raadInfo();
-        }catch (Exception e){}
+
+            premierManager.SaveFootballClub();
+            premierManager.readInfoMatches("MatchInfo.txt");
+            premierManager.SaveFootballMatch();
+        }catch (Exception e){
+        }
+
 
         int method = 0;
         while (true) {
             //OPTIONS TABLE
-
-
             System.out.println("⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀WELCOME⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀ ");
             System.out.println("⨀                                       ⨀");
             System.out.println("⨀                                       ⨀");
@@ -44,12 +49,19 @@ public class Console {
             System.out.println("");
             System.out.println("⨁ Save--------------------------------------->  6");
             System.out.println("");
-            System.out.println("⨁ Quit--------------------------------------->  7");
+            System.out.println("⨁ GUI---------------------------------------->  7");
+            System.out.println("");
+            System.out.println("⨁ Quit--------------------------------------->  8");
             System.out.println(" ");
             System.out.println("   ⭕       Please enter your choice  : ");
 
 
-            method = Integer.parseInt(input.next());
+
+try {
+    method = Integer.parseInt(input.next());
+
+}catch (Exception e){}
+
             switch (method) {
 
                 case 1:
@@ -73,20 +85,31 @@ public class Console {
                     break;
 
                 case 6:
-                    premierManager.saveMatch("ClubDetails.txt");
+                    premierManager.saveClub("ClubInfo.txt");
+                    premierManager.saveMatch("MatchInfo.txt");
+                    premierManager.realSave();
+
+
                     break;
 
                 case 7:
+                    launch(GUI.class);
+                    break;
+
+
+                case 8:
                     System.out.println("Wait...............");
                     break;
 
+
                 default:
                     System.out.println("Invalid Option");
-                    break;
+                    //    main();
+
 
 
             }
-            if (method == 7) {
+            if (method == 8) {
                 input.close();
                 System.exit(0);
             }
@@ -94,43 +117,92 @@ public class Console {
         }
 
 
-    }
-
-    private static void raadInfo() {
-
 
     }
-
-
+// method for adding a club
     private static void addClub() {
 
         FootballClub players = null;
 
         if (value < 20) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Please enter the name of the club:");
-            String nameOfTheClub = scanner.next();
+            if (value < 20) {
 
-            System.out.println("Please enter the Location of the Club");
-            String locationOfTheClub = scanner.next();
+               //asking the club name from the user
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("Please enter the name of the club:");
+                String nameOfTheClub = scanner.next();
 
-            System.out.println("please enter the name of the Manager");
-            String nameOfTheManager = scanner.next();
+                // validation part for the name
+                while (!nameOfTheClub.matches("[a-zA-Z]+")) {
+                    //Displaying a message
+                    System.out.println("don't use integer value or Symbols! Please enter the club name again...");
+                    System.out.println("Please enter the club name again : ");
+                    nameOfTheClub = scanner.next();
+                }
 
-            System.out.println("Please enter the registration Number");
-            String registrationNumber = scanner.next();
+           //asking the club location from the user
+                  System.out.println("Please enter the Location of the Club");
+                  String locationOfTheClub = scanner.next();
+                // validation part for the location
+                while (!locationOfTheClub.matches("[a-zA-Z]+")) {
+                    //Displaying a message
+                    System.out.println("don't use integer value or Symbols! Please enter the location again...");
+                    System.out.println("Please enter the location again : ");
+                    locationOfTheClub = scanner.next();
+                }
 
-            System.out.println("Please enter the Contact Number of the club:");
-            Integer contactNumberOfTheClub = Integer.valueOf(scanner.next());
+
+                System.out.println("please enter the name of the Manager");
+                String nameOfTheManager = scanner.next();
+                // validation part for the manager name
+                while (!nameOfTheManager.matches("[a-zA-Z]+")) {
+                    //Displaying a message
+                    System.out.println("don't use integer value or Symbols! Please enter the manager name again...");
+                    System.out.println("Please enter the manager name again: ");
+                    nameOfTheManager = scanner.next();
+                }
 
 
-            players = new FootballClub(nameOfTheClub, locationOfTheClub, nameOfTheManager, registrationNumber, contactNumberOfTheClub);
+                //Asking the registration number
+                System.out.println("Please enter the registration Number :");
+                String registrationNumber = scanner.next();
+
+
+
+
+               //Asking the contact number
+               System.out.println("Please enter the Contact Number of the club:");
+               String contactNumberOfTheClub = scanner.next();
+
+//    validation part for the Contact number
+                while (!contactNumberOfTheClub.matches("[0-9]+")) {
+                    System.out.println("Invalid format  ");
+
+                    System.out.println("Please enter the Contact number again");
+                    contactNumberOfTheClub = scanner.next();
+                }
+
+
+
+                int numberOfWins=0;
+                int numberOfDraws=0;
+                int numberOfDefeats =0;
+                int numberOfGoalsReceived =0;
+                int numberOfPoints =0;
+                int numberOfGoalsScored =0;
+                int numberOfMatchesPlayed =0;
+                double GD=0;
+                players = new FootballClub(nameOfTheClub,locationOfTheClub, nameOfTheManager, registrationNumber, contactNumberOfTheClub, numberOfWins, numberOfDraws, numberOfDefeats, numberOfGoalsReceived,  numberOfPoints,  numberOfGoalsScored, numberOfMatchesPlayed,GD);
+
+
+            };
             premierManager.addClub(players);
             value++;
         }
     }
-    private static void deleteClub(){
 
+    //deleting a team
+    private static void deleteClub(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter the Club name :");
         String str = scanner.next();
@@ -138,52 +210,97 @@ public class Console {
 
     }
 
+    // display the statistics
     private static void displayState() {
-
         premierManager.displayState();
 
     }
 
+    //display the table
     private static void premierTable(){
-
         premierManager.premierTable();
 
     }
 
+    //played match
     private static void playedMatch() throws IOException, ClassNotFoundException {
-        Scanner scanner =new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
+
+    //Asking the year
         System.out.println("Please enter the year :");
-        Integer year=scanner.nextInt();
+        Integer year = scanner.nextInt();
 
-        System.out.println("Please enter the month :");
-        Integer month = scanner.nextInt();
+    // Validation part for the year
+        if (year > 1949 && year < 2023) ;
+    else {
+        System.out.println("Please enter the year in correct format (1950-2022)");
+            year = scanner.nextInt();
+        }
 
+
+    //Asking the month
+         System.out.println("Please enter the month :");
+         Integer month = scanner.nextInt();
+
+    // Validation part for the month
+        if (month > 0 && month < 12) ;
+        else {
+            System.out.println("Please enter the month in correct format (1-12)");
+            month = scanner.nextInt();
+        }
+
+    // Asking the day
         System.out.println("Please enter the day :");
         Integer day = scanner.nextInt();
 
-        System.out.println("Please enter the home team name :");
-        String team1=scanner.next();
+    // Validation part for the day
+        if (day > 0 && day < 32) ;
+        else {
+            System.out.println("Please enter the day in correct format (1-31)");
+            day = scanner.nextInt();
+        }
+    //Asking the name of the teams
+          //Team A
+            System.out.println("Please enter the name of the team A :");
+            String team1 = scanner.next();
+            // validation part for the name
+            while (!team1.matches("[a-zA-Z]+")) {
+                System.out.println("don't use integer value or Symbols! Please enter the home team name again...");
+                System.out.println("Please enter the team A name again : ");
+                team1 = scanner.next();
+            }
 
-        System.out.println("Please enter the away team name :");
-        String team2=scanner.next();
+            //Team B
+            System.out.println("Please enter the name of the team B:");
+            String team2 = scanner.next();
+            // validation part for the name
+            while (!team2.matches("[a-zA-Z]+")) {
+                System.out.println("don't use integer value or Symbols! Please enter the away team name again...");
+                System.out.println("Please enter the team B name again : ");
+                team2 = scanner.next();
+            }
 
-        System.out.println("Please enter the home team scored goales :");
-        Integer homeGoals =scanner.nextInt();
+    //asking the number of goals scored by team A
+            System.out.println("Please enter the team A Goals :");
+            Integer homeGoals = scanner.nextInt();
+//            while(!homeGoals.matches("[0-9]+"))
 
-        System.out.println("Please enter the awate team scored goales : ");
-        Integer awayGoals = scanner.nextInt();
+     // asking the number of goals scored by team B
+            System.out.println("Please enter the team B goals : : ");
+            Integer awayGoals = scanner.nextInt();
 
 
-        premierManager.playedMatch(year,month,day,team1,team2,homeGoals,awayGoals);
+            premierManager.playedMatch(year, month, day, team1, team2, homeGoals, awayGoals);
+
+
+        }
 
 
 
+    @Override
+    public void start(Stage primaryStage) throws Exception {
 
     }
-
-
-
-
-
 }
+

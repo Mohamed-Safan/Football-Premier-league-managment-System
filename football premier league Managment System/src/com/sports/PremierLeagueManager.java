@@ -1,22 +1,37 @@
 package com.sports;
 
+
 import java.io.*;
 import java.util.*;
 
 public class PremierLeagueManager implements LeagueManager {
 
-    private List<FootballClub> playList = new ArrayList<>();
+
+    public List<FootballClub> playList = new ArrayList<>();
     private int nmr = playList.size();
-    private final ArrayList<LeagueMatch> tournmnt = new ArrayList<>();
+    private ArrayList<LeagueMatch> tournment = new ArrayList<>();
     private String name;
-    ;
+
+
+
+
+    public static PremierLeagueManager getInstance() {
+        PremierLeagueManager instance = null;
+        if (instance == null) {
+            instance = new PremierLeagueManager();
+        }
+        return instance;
+    }
 
 
     // ---------------adding clubs----------------------
     @Override
     public void addClub(FootballClub player) {
 
-        if (playList.contains(player)) {     //  if the team is already in the league
+
+
+
+    if (playList.contains(player)) {     //  if the team is already in the league
             System.out.println("This club is already in the league");
 
         } else if (nmr == 20) {  //  if the number of clubs is above 20
@@ -61,6 +76,27 @@ public class PremierLeagueManager implements LeagueManager {
 
     }
 
+
+    //--------------------- Saving Clubs-----------------------
+
+    public void saveClub(String fileName)throws IOException{
+        try {
+            FileOutputStream lms=new FileOutputStream(fileName);
+            ObjectOutputStream clme=new ObjectOutputStream(lms);
+
+
+
+            clme.writeObject(playList);
+            clme.close();
+
+        }catch (IOException e){
+
+
+        }
+    }
+
+
+
     //----------------Displaying statistics-----------------------
     @Override
     public void displayState() {
@@ -71,28 +107,42 @@ public class PremierLeagueManager implements LeagueManager {
         } else {
 
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Please enter the club name:"); // asking from the user which teams statistics you need to see
+            // asking from the user which teams statistics you need to see
+            System.out.println("Please enter the club name:");
             String ln = scanner.nextLine();
+
             for (FootballClub sportsClub : playList) {
+                //get the club name
                 if (sportsClub.getNameOfTheClub().equals(ln)) {
-
+                         //if that club name is equal
+                    //display the club name
                     System.out.println("Name of the club           :     " + sportsClub.getNameOfTheClub());
+                    //display the played matches
                     System.out.println("Number of matches played   :     " + sportsClub.getNumberOfMatchesPlayed());
+                    //display the won matches
                     System.out.println("Number of won matches      :     " + sportsClub.getNumberOfWins());
+                    //display the lost matches
                     System.out.println("Number of lost matches     :     " + sportsClub.getNumberOfDefeats());
+                    //display the drawn matches
                     System.out.println("number of drawn matches    :     " + sportsClub.getNumberOfDraws());
+                    //display the received goals
                     System.out.println("Number of goals received   :     " + sportsClub.getNumberOfGoalsReceived());
+                    //display the Scored goals
                     System.out.println("Number of goals scored     :     " + sportsClub.getNumberOfGoalsScored());
+                    //display the Scored points
                     System.out.println("Points                     :     " + sportsClub.getNumberOfPoints());
+                    //add a line
                     System.out.println("");
-                }
 
-                else   //if the wrong team's name is entered
-                    System.out.println("Sorry! Please check the club's name and Try again later");
-                    System.out.println("");
+                    return;   //if the wrong team's name is entered
+                }
+            }
+             // if the user entered name is wrong
+            System.out.println("Sorry! Please check the club's name and Try again later");
+                System.out.println("");
 
             }
-        }
+
 
 
     }
@@ -100,19 +150,22 @@ public class PremierLeagueManager implements LeagueManager {
 
 
 
-//---------------------------Displaying premierLeague table-------------------------------
+    //---------------------------Displaying premierLeague table-------------------------------
     @Override
     public void premierTable() {
 
-                           // table headings :- Club name  ,  Played matches ,  Matches win, matches played , draw matches,  points , goal difference
-        System.out.printf("%-6s%10s%6s%12s%10s%15s%20s\n\n", "ClubName", "P.M", "M.W", "M.L", "M.D", "Points", "G.D");
+        // table headings :- Club name  ,  Played matches ,  Matches win, matches played , draw matches,  points , goal difference
+        System.out.printf("%8s   %12s   %12s   %14s   %12s   %17s   %20s   %23s   %17s\n", "ClubName", "P.M", "M.W", "M.L", "M.D", "GS", "GR", "Points", "GD");
+        System.out.println("*******************************************************************************************************************************************************************\n");
 
 
         // Club details
         Collections.sort(playList, new table1());
         for (FootballClub std : playList) {
 
-            System.out.printf("%-8s%10d%6d%12d%10d%15f%20d\n", std.getNameOfTheClub(), std.getNumberOfMatchesPlayed(), std.getNumberOfWins(), std.getNumberOfDefeats(), std.getNumberOfDraws(), std.getNumberOfPoints(), (std.getNumberOfGoalsScored() - std.getNumberOfGoalsReceived()));
+            System.out.printf("%8s   %12s   %12s   %14s   %12s   %17s   %20s   %23s   %17s\n", std.getNameOfTheClub(), std.getNumberOfMatchesPlayed(), std.getNumberOfWins(), std.getNumberOfDefeats(), std.getNumberOfDraws(),std.getNumberOfGoalsScored(),std.getNumberOfGoalsReceived(), std.getNumberOfPoints(), (std.getNumberOfGoalsScored() - std.getNumberOfGoalsReceived()));
+       System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
         }
     }
 
@@ -124,95 +177,110 @@ public class PremierLeagueManager implements LeagueManager {
     public void playedMatch(Integer year, Integer month, Integer day, String team1, String team2, Integer homeGoals, Integer awayGoals) {
 
         if (playList.isEmpty()) {// if no teams in the league
-            System.out.println("No clubs in the leage");
+            System.out.println("No clubs in the league");
         }
 
         else {
             boolean mgr1 = false;
-            FootballClub h = null;
-            FootballClub a = null;
+            FootballClub teamSA = null;
+            FootballClub teamsSB = null;
+
+
+            //Team 1
             for (FootballClub players : playList) {
-
+                //get the club name  1
                 if (players.getNameOfTheClub().equals(team1))
-                    h = players;
+                    teamSA = players;
+            }
+
+            // if user entered name is not in the league
+            if(teamSA==null){
+                //error message
+                System.out.println("Please check the team name");
+                return;
 
             }
+
+            //Team 2
             for (FootballClub players2 : playList) {
+                //get the club name 2
                 if (players2.getNameOfTheClub().equals(team2))
-                    a = players2;
-
+                    teamsSB = players2;
             }
-
-            int hgoals = -1;
-
-            try {
-                hgoals = Integer.parseInt(String.valueOf(homeGoals));
-
-            } catch (Exception exception) {
-                System.out.println("Goales scored by home team");
-
-            }
-
-            if (hgoals == -1) {
-                System.out.println("Number of goales scored");
+            // if user entered name is not in the league
+            if(teamsSB==null){
+                //error message
+                System.out.println("Please check the team name");
                 return;
             }
 
+            int Agoals = -1;
+                Agoals = Integer.parseInt(String.valueOf(homeGoals));
 
-            int agoals = -1;
-            try {
-                agoals = Integer.parseInt(String.valueOf(awayGoals));
-
-            } catch (Exception exception) {
-                System.out.println("Please enter the number of goals scored by away team :");
-
-            }
-
-            if (agoals == -1) {
-                System.out.println("Number of goals scored");
-                return;
-            }
+            int Bgoals = -1;
+                Bgoals = Integer.parseInt(String.valueOf(awayGoals));
 
 
-            LeagueMatch match = new LeagueMatch(h, a, homeGoals, awayGoals, new Date(day, month, year));
 
-            match.setTeam1(h);
+    LeagueMatch match = new LeagueMatch(teamSA, teamsSB, homeGoals, awayGoals, new Date(day, month, year));
 
-            match.setTeam2(a);
-            match.setTeam1Score(hgoals);
-            match.setTeam2Score(agoals);
-            tournmnt.add(match);
-            assert h != null;
-            h.setNumberOfGoalsScored(h.getNumberOfGoalsScored() + hgoals);
-            assert a != null;
-            a.setNumberOfGoalsScored(a.getNumberOfGoalsScored() + agoals);
-            h.setNumberOfGoalsReceived(h.getNumberOfGoalsReceived() + agoals);
-            a.setNumberOfGoalsReceived(a.getNumberOfGoalsReceived() + hgoals);
+//team 1
+    match.setTeam1(teamSA);
+//team 2
+    match.setTeam2(teamsSB);
 
-            h.setNumberOfMatchesPlayed(h.getNumberOfMatchesPlayed() + 1);
-            a.setNumberOfMatchesPlayed(a.getNumberOfMatchesPlayed() + 1);
+    match.setTeam1Score(Agoals);
+    match.setTeam2Score(Bgoals);
+    tournment.add(match);
+
+    //scored goals  team 1
+    teamSA.setNumberOfGoalsScored(teamSA.getNumberOfGoalsScored() + Agoals);
+    //scored goals  team 2
+    teamsSB.setNumberOfGoalsScored(teamsSB.getNumberOfGoalsScored() + Bgoals);
+    //received goals team 1
+    teamSA.setNumberOfGoalsReceived(teamSA.getNumberOfGoalsReceived() + Bgoals);
+    //received goals team 2
+    teamsSB.setNumberOfGoalsReceived(teamsSB.getNumberOfGoalsReceived() + Agoals);
+
+
+           // Increase the number of matches played after the  match
+    teamSA.setNumberOfMatchesPlayed(teamSA.getNumberOfMatchesPlayed() + 1);
+            // Increase the number of matches played after the  match
+    teamsSB.setNumberOfMatchesPlayed(teamsSB.getNumberOfMatchesPlayed() + 1);
 
             //adding scores /points
 
 
+            //if team 1 goals greater than team 2
+            if (Agoals > Bgoals) {
 
-            if (hgoals > agoals) {
-                h.setNumberOfPoints(h.getNumberOfPoints() + 3);
-                h.setNumberOfWins(h.getNumberOfWins() + 1);
-                a.setNumberOfDefeats(a.getNumberOfDefeats() + 1);
+               // 3 points awarded for a winning match
+                teamSA.setNumberOfPoints(teamSA.getNumberOfPoints() + 3);
+                //To increase the number of matches won
+                teamSA.setNumberOfWins(teamSA.getNumberOfWins() + 1);
+                //To increase the number of matches lost
+                teamsSB.setNumberOfDefeats(teamsSB.getNumberOfDefeats() + 1);
+            }
+            //if team 2 goals greater than team 1
+            else if (Agoals < Bgoals) {
+                // 3 points awarded for a winning match
+                teamsSB.setNumberOfPoints(teamsSB.getNumberOfPoints() + 3);
+                //To increase the number of matches won
+                teamsSB.setNumberOfWins(teamsSB.getNumberOfWins() + 1);
+                //To increase the number of matches lost
+                teamSA.setNumberOfDefeats(teamSA.getNumberOfDefeats() + 1);
             }
 
-            else if (hgoals < agoals) {
-                a.setNumberOfPoints(a.getNumberOfPoints() + 3);
-                a.setNumberOfWins(a.getNumberOfWins() + 1);
-                h.setNumberOfDefeats(h.getNumberOfDefeats() + 1);
-            }
-
+            //If the matches end in a draw
             else {
-                h.setNumberOfPoints(h.getNumberOfPoints() + 1);
-                a.setNumberOfPoints(a.getNumberOfPoints() + 1);
-                h.setNumberOfDraws(h.getNumberOfDraws() + 1);
-                a.setNumberOfDraws(a.getNumberOfDraws() + 1);
+                //1 points for team 1
+                teamSA.setNumberOfPoints(teamSA.getNumberOfPoints() + 1);
+                //1 points for team 2
+                teamsSB.setNumberOfPoints(teamsSB.getNumberOfPoints() + 1);
+                // To increase the number of matches drawn
+                teamSA.setNumberOfDraws(teamSA.getNumberOfDraws() + 1);
+                //To increase the number of matches drawn
+                teamsSB.setNumberOfDraws(teamsSB.getNumberOfDraws() + 1);
             }
 
 
@@ -220,68 +288,141 @@ public class PremierLeagueManager implements LeagueManager {
     }
 
 
+    public ArrayList<LeagueMatch> SaveFootballMatch() {
 
-   // --------------------- Saving club details in a file-----------------
-    @Override
-    public void saveMatch(String fileName)throws IOException
-    {
+        // adding a file
+        File file = new File("MatchInfo.txt");
 
-        FileOutputStream fileOutputStreams = new FileOutputStream(fileName);
+        try {
+            FileInputStream inputStream = new FileInputStream(file);
+            ObjectInputStream inputStream1 = new ObjectInputStream(inputStream);
 
-        ObjectOutputStream objectOutputStreams = new ObjectOutputStream(fileOutputStreams);
+            tournment = (ArrayList<LeagueMatch>) inputStream1.readObject();
+            inputStream1.close();
+            return tournment;
 
-
-        for(FootballClub club:playList ){
-            objectOutputStreams.writeObject(club);
+        } catch (Exception e) {
+            return tournment;
         }
+    }
 
-        for (LeagueMatch newMatch : tournmnt){
-            objectOutputStreams.writeObject(newMatch);
+
+    ///Saving Club Details in a file
+    public List<FootballClub> SaveFootballClub() {
+        ArrayList<FootballClub> footballClubList = new ArrayList<>();
+
+         //adding a file
+        File file = new File("clubInfo.txt");
+
+        try {
+            FileInputStream inputStream = new FileInputStream(file);
+            ObjectInputStream inputStream1 = new ObjectInputStream(inputStream);
+
+            playList = (ArrayList<FootballClub>) inputStream1.readObject();
+            inputStream1.close();
+            return playList;
+
+        } catch (Exception e) {
+            return playList;
         }
+    }
 
-        objectOutputStreams.flush();
-        fileOutputStreams.close();
-        objectOutputStreams.close();
-        System.out.println("Saved successfully");
+    //Saving Match Details
+    public void saveMatch(String fileName)throws IOException {
+        FileOutputStream fos = new FileOutputStream(fileName);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+
+        for (LeagueMatch match : tournment) {
+            oos.writeObject(match);
+        }
+        oos.flush();
+        //close the file
+        fos.close();
+        oos.close();
 
     }
 
 
-    // ---------------Loading previous data-----------------
-    @Override
-    public void readInfo(String name) throws IOException, ClassNotFoundException {
 
 
-        File fle =new File(name);
-        FileInputStream lms = new FileInputStream(fle);
-        ObjectInputStream stream = new ObjectInputStream(lms);
+    //---------------retrieving Match details
+    public void readInfoMatches(String fileName) throws IOException, ClassNotFoundException {
+        FileInputStream inputStream=new FileInputStream(fileName);
+        ObjectInputStream inputStream1=new ObjectInputStream(inputStream);
+        for (;;){
 
-
-
-        for (;; ) {
             try {
-                FootballClub fb = (FootballClub) stream.readObject();
-                playList.add(fb);
-            } catch (EOFException e) {
+                LeagueMatch match1=(LeagueMatch) inputStream1.readObject();
+                tournment.add(match1);
+            }catch (EOFException e){
                 break;
             }
         }
-        lms.close();
-        stream.close();
+        //close the file
+        inputStream.close();
+        inputStream1.close();
         System.out.println("Data retrieved successfully");
+    }
 
 
+
+
+
+
+
+
+
+
+
+    ///============================
+
+
+    public List<FootballClub> getLeader()
+    {
+
+
+        FootballClub f = new FootballClub("aaaa","hghh","fernf","1345","077",5,5,4,3,2,1,5,4);
+   playList.add(f);
+System.out.println(playList.size());
+Collections.sort(playList, Collections.reverseOrder());
+    return playList;
 
     }
 
+    //read the match details in real value
+    public void realSave() {
+        FootballClub[] a = playList.toArray(new FootballClub[]{});
+        File fle = new File("TeamDetails.txt");
+        Writer out;
+        try (
+                FileWriter wri = new FileWriter(fle)) {
+            out = new PrintWriter(wri);
+
+            int d = playList.size();
+            for (int i = 0; i < d; i++) {
+                out.write("Club name: " + playList.get(i).getNameOfTheClub() + "\n Location of the club :" + playList.get(i).getLocationOfTheClub() + "\n Name of the manager :" + playList.get(i).getNameOfTheManager() + "\n Contact Number of the club :" + playList.get(i).getContactNumberOfTheClub() + "\n Number of matches Played :" + playList.get(i).getNumberOfMatchesPlayed() + "\n Number of win Matches :" + playList.get(i).getNumberOfWins() + "\n Number of Lost matches :" + playList.get(i).getNumberOfDefeats() + "\n Number of Draws :" + playList.get(i).getNumberOfDraws() + "\n number of Scored goals :" + playList.get(i).getNumberOfGoalsScored() + "\n Number of received goals :" + playList.get(i).getNumberOfGoalsReceived() + "\n Points : " + playList.get(i).getNumberOfPoints()+"\n"+"\n");
+
+
+                out.flush();
+            }
+            System.out.println("Successfully saved....");
+        } catch (IOException exception) {
+            System.out.println("No data to show");
+        }
+
+    }
+
+
+
+
+
     ///////////////-----------------------------Private Class-----------------------------//////////////////////////////
 
-
     //Comparable interface for sorting results
-    private class table1 implements Comparator<FootballClub> {
+    public class table1 implements Comparator<FootballClub> {
         @Override
         public int compare(FootballClub nmbr1, FootballClub nmbr2) {
-
 
             if (nmbr1.getNumberOfPoints() > nmbr2.getNumberOfPoints())
                 return -1;
@@ -293,7 +434,7 @@ public class PremierLeagueManager implements LeagueManager {
 
                 //checking goal difference
                 int gf = nmbr1.getNumberOfGoalsScored() - nmbr1.getNumberOfGoalsReceived();  //goal difference
-                int gf2 = nmbr2.getNumberOfGoalsScored() - nmbr2.getNumberOfGoalsReceived();//goal diiference 2
+                int gf2 = nmbr2.getNumberOfGoalsScored() - nmbr2.getNumberOfGoalsReceived();//goal difference 2
 
                 if (gf > gf2)
                     return -1;
@@ -303,22 +444,18 @@ public class PremierLeagueManager implements LeagueManager {
 
                 else return 0;
             }
-
-
         }
 
 
-
-
-
         //-------------Date innerclass------------------
-        public class Date {
-
+        public class Date implements Serializable{
+//variables
             private int year;
             private int month;
             private int day;
 
-            public Date(int year, int month, int day) { //Constructor
+            //Constructor
+            public Date(int year, int month, int day) {
                 this.year = year;
                 this.month = month;
                 this.day = day;
@@ -378,9 +515,6 @@ public class PremierLeagueManager implements LeagueManager {
                 return Objects.hash(year, month, day);
             }
         }
-    }
-}
-
-
+    }}
 
 

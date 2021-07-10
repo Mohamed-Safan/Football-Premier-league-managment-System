@@ -1,7 +1,8 @@
 package com.sports;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public interface LeagueManager {
 
@@ -9,18 +10,22 @@ public interface LeagueManager {
     public void deleteClub(String nameOfTheClub);
     public void displayState();
     public void premierTable();
-    public void playedMatch(Integer year, Integer month,Integer day,String team1, String team2, Integer homeGoals, Integer awayGoals);
-    public void saveMatch(String fileName) throws IOException;
-
-//    void saveMatch(String name) throws IOException hrows IOException;
-
-    //--------------------- Saving club details in a file-----------------
-//    void saveMatch()//String name) throws IOException
-//    ;
-
-    public void readInfo(String name) throws IOException, ClassNotFoundException;;
+    public void realSave();
 
 
 
+    public static ArrayList<FootballClub> saveMatchFile1() {
+        return null;
+    }
+    public void saveClub(String fileName)throws IOException;
 
+    //---------------------Adding played match-----------------------------------
+    void playedMatch(Integer year, Integer month, Integer day, String team1, String team2, Integer homeGoals, Integer awayGoals);
+
+    public void saveMatch(String fileName)throws IOException;
+
+    public ArrayList<LeagueMatch> SaveFootballMatch();
+
+
+    public List<FootballClub> getLeader();
 }
